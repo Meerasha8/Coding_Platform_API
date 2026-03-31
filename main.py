@@ -3,10 +3,8 @@ import os
 from dotenv import load_dotenv
 import requests
 from math import ceil
-from selenium import webdriver
 from bs4 import BeautifulSoup
 import re
-import time
 
 load_dotenv()
 
