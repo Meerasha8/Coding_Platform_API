@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,render_template
 import os
 from dotenv import load_dotenv
 import requests
@@ -12,11 +12,9 @@ load_dotenv()
 
 
 LEETCODE_URL = os.getenv("LEETCODE_URL")
-USER = os.getenv("LEETCODE_ID")
 
 CODEFORCES_URL = os.getenv("CODEFORCES_URL")
 CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL")
-
 
 CODECHEF_URL = os.getenv("CODECHEF_URL")
 
@@ -25,6 +23,22 @@ CODECHEF_URL = os.getenv("CODECHEF_URL")
 
 
 app = Flask(__name__)
+
+@app.route("/")
+def home_page():
+    return render_template("index.html")
+
+@app.route("/leetcode")
+def leetcode_guide():
+    return render_template("leetcode.html")
+
+@app.route("/codeforces")
+def codeforces_guide():
+    return render_template("codeforces.html")
+
+@app.route("/codechef")
+def codechef_guide():
+    return render_template("codechef.html")
 
 
 @app.route("/leetcode/<username>",methods=["GET"])

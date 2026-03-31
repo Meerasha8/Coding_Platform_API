@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codeforces API Guide</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Codeforces API</h2>
+
+  <h3>📌 Endpoint</h3>
+  <p><code>/codeforces/&lt;username&gt;</code></p>
+
+  <h3>📌 What it does</h3>
+  <p>Fetches rating, rank, and number of solved problems from Codeforces.</p>
+
+  <h3>📌 Returns</h3>
+  <ul>
+    <li>Current rating</li>
+    <li>Maximum rating</li>
+    <li>Rank</li>
+    <li>Total solved problems</li>
+  </ul>
+
+  <h3>📌 Try it</h3>
+  <input id="username" placeholder="Enter username">
+  <button onclick="testCF()">Test API</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+async function testCF() {
+  const user = document.getElementById("username").value;
+  const res = await fetch(`/codeforces/${user}`);
+  const data = await res.json();
+  document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>

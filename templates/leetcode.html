@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LeetCode API Guide</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+  <h2>LeetCode API</h2>
+
+  <h3>📌 Endpoint</h3>
+  <p><code>/leetcode/&lt;username&gt;</code></p>
+
+  <h3>📌 What it does</h3>
+  <p>Fetches user problem-solving stats and contest details from LeetCode.</p>
+
+  <h3>📌 Returns</h3>
+  <ul>
+    <li>Total problems solved</li>
+    <li>Easy, Medium, Hard counts</li>
+    <li>Contest rating</li>
+    <li>Global ranking</li>
+  </ul>
+
+  <h3>📌 Try it</h3>
+  <input id="username" placeholder="Enter username">
+  <button onclick="testAPI()">Test API</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+async function testAPI() {
+  const user = document.getElementById("username").value;
+  const res = await fetch(`/leetcode/${user}`);
+  const data = await res.json();
+  document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>
