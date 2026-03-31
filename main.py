@@ -3,6 +3,10 @@ import os
 from dotenv import load_dotenv
 import requests
 from math import ceil
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import re
+import time
 
 load_dotenv()
 
@@ -13,6 +17,9 @@ USER = os.getenv("LEETCODE_ID")
 CODEFORCES_ID = os.getenv("CODEFORCES_ID")
 CODEFORCES_URL = os.getenv("CODEFORCES_URL") + CODEFORCES_ID
 CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL") + CODEFORCES_ID
+
+CODECHEF_ID = os.getenv("CODECHEF_ID")
+CODECHEF_URL = os.getenv("CODECHEF_URL") + CODECHEF_ID
 
 COUNT_QUERY = {
     "query": """
@@ -96,7 +103,6 @@ def codeforces(username):
     count_res = requests.get(CODEFORCES_STATUS_URL).json()
     
     solved = set()
-    print(count_res)
     for sub in count_res["result"]:
         if sub.get("verdict") == "OK":
             prob = sub["problem"]
@@ -111,10 +117,42 @@ def codeforces(username):
     }
     
     return jsonify(data)
+
+@app.route("/codechef/<username>",methods=["GET"])
+def codechef(username):
+    driver = webdriver.Chrome()
+    driver.get(CODECHEF_URL)
+    time.sleep(5)
+    html = driver.page_source
+    soup = BeautifulSoup(html,"html.parser")
+    text = soup.get_text(" ",strip=True)
+    
+    rating_block = re.search(r'(\d{3,4})\s*\(\s*\+?(-?\d+)\s*\)\s*Rating', text)
+
+    if rating_block:
+        rating = rating_block.group(1)
+        change = rating_block.group(2)
+    else:
+        rating = "Not found"
+        change = "Not found"
+        
+    problems_match = re.search(r'Total Problems Solved:\s*(\d+)', text)
+    problems = problems_match.group(1) if problems_match else "Not found"
+    
+    driver.quit()
+    
+    data = {
+        "rating":rating,
+        "change_in_rating":change,
+        "problems":problems
+    }
+    
+    return jsonify(data)
+    
+        
     
     
 
 if __name__ == "__main__":
-    print(CODEFORCES_URL)
     app.run(host="0.0.0.0",port=5000,debug=True)
     
