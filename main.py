@@ -10,6 +10,10 @@ load_dotenv()
 LEETCODE_URL = os.getenv("LEETCODE_URL")
 USER = os.getenv("LEETCODE_ID")
 
+CODEFORCES_ID = os.getenv("CODEFORCES_ID")
+CODEFORCES_URL = os.getenv("CODEFORCES_URL") + CODEFORCES_ID
+CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL") + CODEFORCES_ID
+
 COUNT_QUERY = {
     "query": """
     query getUserProfile($username: String!) {
@@ -50,7 +54,7 @@ RATING_QUERY = {
 app = Flask(__name__)
 
 
-@app.route("/<username>",methods=["GET"])
+@app.route("/leetcode/<username>",methods=["GET"])
 def leetcode(username):
     count_res = requests.post(LEETCODE_URL,json=COUNT_QUERY)
     count_data= count_res.json()
@@ -80,5 +84,37 @@ def leetcode(username):
     
     return jsonify(data)
 
+@app.route("/codeforces/<username>",methods=["GET"])
+def codeforces(username):
+    ranking_res = requests.get(CODEFORCES_URL).json()["result"][0]
+    
+    curr_rating = ranking_res["rating"]
+    max_rating = ranking_res["maxRating"]
+    curr_rank = ranking_res["rank"]
+    max_rank = ranking_res["maxRank"]
+    
+    count_res = requests.get(CODEFORCES_STATUS_URL).json()
+    
+    solved = set()
+    print(count_res)
+    for sub in count_res["result"]:
+        if sub.get("verdict") == "OK":
+            prob = sub["problem"]
+            solved.add((prob["contestId"],prob["index"]))
+    
+    data = {
+        "curr_rating":curr_rating,
+        "curr_rank":curr_rank,
+        "max_rating":max_rating,
+        "max_rank":max_rank,
+        "problem_solved":len(solved)
+    }
+    
+    return jsonify(data)
+    
+    
+
 if __name__ == "__main__":
+    print(CODEFORCES_URL)
     app.run(host="0.0.0.0",port=5000,debug=True)
+    
