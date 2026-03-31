@@ -18,6 +18,10 @@ CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL")
 
 CODECHEF_URL = os.getenv("CODECHEF_URL")
 
+GITHUB = os.getenv("GITHUB")
+
+LINKEDIN = os.getenv("LINKEDIN")
+
 
 
 
@@ -26,19 +30,19 @@ app = Flask(__name__)
 
 @app.route("/")
 def home_page():
-    return render_template("index.html")
+    return render_template("index.html",github=GITHUB,linkedin=LINKEDIN)
 
 @app.route("/leetcode")
 def leetcode_guide():
-    return render_template("leetcode.html")
+    return render_template("leetcode.html",active="leetcode",github=GITHUB,linkedin=LINKEDIN)
 
 @app.route("/codeforces")
 def codeforces_guide():
-    return render_template("codeforces.html")
+    return render_template("codeforces.html",active="codeforces",github=GITHUB,linkedin=LINKEDIN)
 
 @app.route("/codechef")
 def codechef_guide():
-    return render_template("codechef.html")
+    return render_template("codechef.html",active="codechef",github=GITHUB,linkedin=LINKEDIN)
 
 
 @app.route("/leetcode/<username>",methods=["GET"])

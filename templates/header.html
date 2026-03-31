@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="/static/style.css">
 
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 
@@ -16,14 +15,14 @@
 <header class="header">
     <div class="container nav-container">
 
-        <a href="/" class="logo">
+        <a href="{{ url_for('home_page') }}" class="logo">
             ⚡ CodingStats
         </a>
 
         <nav class="nav-links">
-            <a href="/leetcode" class="nav-link">LeetCode</a>
-            <a href="/codechef" class="nav-link">CodeChef</a>
-            <a href="/codeforces" class="nav-link">Codeforces</a>
+            <a href="{{ url_for('leetcode_guide')}}" class="nav-link {% if active == 'leetcode' %}active{% endif %}">LeetCode</a>
+            <a href="{{ url_for('codechef_guide')}}" class="nav-link {% if active == 'codechef' %}active{% endif %}">CodeChef</a>
+            <a href="{{ url_for('codeforces_guide')}}" class="nav-link {% if active == 'codeforces' %}active{% endif %}">Codeforces</a>
         </nav>
 
     </div>

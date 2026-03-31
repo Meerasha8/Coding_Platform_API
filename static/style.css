@@ -347,7 +347,7 @@ button:hover {
 }
 
 .nav-link.active::after {
-  width: 100%;
+  width: 0%;
 }
 
 ::-webkit-scrollbar {

@@ -13,7 +13,7 @@
     </p>
 
     <div class="hero-box">
-      <code>GET /leetcode/your_username</code>
+      <code>GET /leetcode/your_user_name</code>
     </div>
 
   </div>
@@ -26,7 +26,7 @@
 
     <div class="cards">
 
-      <!-- LeetCode -->
+      
       <div class="card">
         <div class="card-header">
           <h3>LeetCode</h3>
@@ -43,12 +43,12 @@
           <li>Contest rating & ranking</li>
         </ul>
 
-        <div class="endpoint">GET /leetcode/&lt;username&gt;</div>
+        <div class="endpoint">GET url/leetcode/&lt;user_name&gt;</div>
 
-        <a href="/leetcode" class="btn">View Docs</a>
+        <a href="{{ url_for('leetcode_guide') }}" class="btn">View Docs</a>
       </div>
 
-      <!-- Codeforces -->
+      
       <div class="card">
         <div class="card-header">
           <h3>Codeforces</h3>
@@ -56,7 +56,7 @@
         </div>
 
         <p class="card-desc">
-          Competitive programming ratings and stats.
+          Competitive programming ratings,problem solved count and stats.
         </p>
 
         <ul class="card-list">
@@ -65,12 +65,12 @@
           <li>Total solved problems</li>
         </ul>
 
-        <div class="endpoint">GET /codeforces/&lt;username&gt;</div>
+        <div class="endpoint">GET url/codeforces/&lt;user_name&gt;</div>
 
-        <a href="/codeforces" class="btn">View Docs</a>
+        <a href="{{ url_for('codeforces_guide') }}" class="btn">View Docs</a>
       </div>
 
-      <!-- CodeChef -->
+
       <div class="card">
         <div class="card-header">
           <h3>CodeChef</h3>
@@ -78,7 +78,7 @@
         </div>
 
         <p class="card-desc">
-          Profile scraping for rating insights.
+          Current Rating,change in rating and problem solved based on Profile.
         </p>
 
         <ul class="card-list">
@@ -87,9 +87,9 @@
           <li>Problems solved</li>
         </ul>
 
-        <div class="endpoint">GET /codechef/&lt;username&gt;</div>
+        <div class="endpoint">GET url/codechef/&lt;user_name&gt;</div>
 
-        <a href="/codechef" class="btn">View Docs</a>
+        <a href="{{ url_for('codechef_guide')}}" class="btn">View Docs</a>
       </div>
 
     </div>
