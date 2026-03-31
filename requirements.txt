@@ -2,3 +2,6 @@ Flask
 requests
 SQLAlchemy
 Flask-SQLAlchemy
+beautifulsoup4
+selenium
+python-dotenv
