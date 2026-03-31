@@ -1,40 +1,90 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Codeforces API Guide</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-<div class="container">
-  <h2>Codeforces API</h2>
+{% include "header.html" %}
 
-  <h3>📌 Endpoint</h3>
-  <p><code>/codeforces/&lt;username&gt;</code></p>
+<section class="api-doc">
+  <div class="container">
 
-  <h3>📌 What it does</h3>
-  <p>Fetches rating, rank, and number of solved problems from Codeforces.</p>
+    <!-- TITLE -->
+    <div class="api-header">
+      <h1>Codeforces API</h1>
+      <span class="method">GET</span>
+    </div>
 
-  <h3>📌 Returns</h3>
-  <ul>
-    <li>Current rating</li>
-    <li>Maximum rating</li>
-    <li>Rank</li>
-    <li>Total solved problems</li>
-  </ul>
+    <!-- ENDPOINT -->
+    <div class="endpoint-box">
+      <code>/codeforces/&lt;username&gt;</code>
+    </div>
 
-  <h3>📌 Try it</h3>
-  <input id="username" placeholder="Enter username">
-  <button onclick="testCF()">Test API</button>
-  <pre id="result"></pre>
-</div>
+    <!-- DESCRIPTION -->
+    <p class="api-desc">
+      Fetch competitive programming statistics including rating, rank, and solved problems from Codeforces.
+    </p>
+
+    <!-- INFO GRID -->
+    <div class="info-grid">
+
+      <!-- RETURNS -->
+      <div class="info-card">
+        <h3>Returns</h3>
+        <ul>
+          <li>Current rating</li>
+          <li>Maximum rating</li>
+          <li>Current rank</li>
+          <li>Total solved problems</li>
+        </ul>
+      </div>
+
+      <!-- SAMPLE RESPONSE -->
+      <div class="info-card">
+        <h3>Sample Response</h3>
+        <pre>{
+  "curr_rating": 1600,
+  "max_rating": 1800,
+  "curr_rank": "expert",
+  "max_rank": "candidate master",
+  "problem_solved": 350
+}</pre>
+      </div>
+
+    </div>
+
+    <!-- TRY BOX -->
+    <div class="try-box">
+
+      <h3>Try it</h3>
+
+      <div class="input-group">
+        <input id="cf-username" placeholder="Enter Codeforces username">
+        <button onclick="testCF()">Send Request</button>
+      </div>
+
+      <pre id="cf-result" class="result-box">// Response will appear here</pre>
+
+    </div>
+
+  </div>
+</section>
+
+{% include "footer.html" %}
 
 <script>
 async function testCF() {
-  const user = document.getElementById("username").value;
-  const res = await fetch(`/codeforces/${user}`);
-  const data = await res.json();
-  document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+  const user = document.getElementById("cf-username").value;
+
+  if (!user) {
+    alert("Enter username");
+    return;
+  }
+
+  const resultBox = document.getElementById("cf-result");
+  resultBox.innerText = "Loading...";
+
+  try {
+    const res = await fetch(`/codeforces/${user}`);
+    const data = await res.json();
+
+    resultBox.innerText = JSON.stringify(data, null, 2);
+  } catch (err) {
+    resultBox.innerText = "Error fetching data";
+  }
 }
 </script>
-</body>
-</html>

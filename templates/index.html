@@ -1,21 +1,100 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Coding API Guide</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% include "header.html" %}
+
+<section class="hero">
+  <div class="container hero-content">
+
+    <h1>
+      Coding Stats API
+    </h1>
+
+    <p class="hero-sub">
+      Fetch coding statistics from <span>LeetCode</span>, 
+      <span>Codeforces</span>, and <span>CodeChef</span> using simple REST APIs.
+    </p>
+
+    <div class="hero-box">
+      <code>GET /leetcode/your_username</code>
+    </div>
+
+  </div>
+</section>
+
+<section class="api-section">
   <div class="container">
-    <h1>📘 Coding API Documentation</h1>
-    <p>This project provides APIs to fetch coding platform statistics using usernames.</p>
+
+    <h2 class="section-title">Available APIs</h2>
 
     <div class="cards">
-      <a href="/leetcode" class="card">LeetCode API Guide</a>
-      <a href="/codeforces" class="card">Codeforces API Guide</a>
-      <a href="/codechef" class="card">CodeChef API Guide</a>
+
+      <!-- LeetCode -->
+      <div class="card">
+        <div class="card-header">
+          <h3>LeetCode</h3>
+          <span class="tag">API</span>
+        </div>
+
+        <p class="card-desc">
+          Problem-solving stats and contest performance.
+        </p>
+
+        <ul class="card-list">
+          <li>Total solved problems</li>
+          <li>Easy / Medium / Hard breakdown</li>
+          <li>Contest rating & ranking</li>
+        </ul>
+
+        <div class="endpoint">GET /leetcode/&lt;username&gt;</div>
+
+        <a href="/leetcode" class="btn">View Docs</a>
+      </div>
+
+      <!-- Codeforces -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Codeforces</h3>
+          <span class="tag">API</span>
+        </div>
+
+        <p class="card-desc">
+          Competitive programming ratings and stats.
+        </p>
+
+        <ul class="card-list">
+          <li>Current & max rating</li>
+          <li>Rank (Expert, Master, etc.)</li>
+          <li>Total solved problems</li>
+        </ul>
+
+        <div class="endpoint">GET /codeforces/&lt;username&gt;</div>
+
+        <a href="/codeforces" class="btn">View Docs</a>
+      </div>
+
+      <!-- CodeChef -->
+      <div class="card">
+        <div class="card-header">
+          <h3>CodeChef</h3>
+          <span class="tag">API</span>
+        </div>
+
+        <p class="card-desc">
+          Profile scraping for rating insights.
+        </p>
+
+        <ul class="card-list">
+          <li>Current rating</li>
+          <li>Rating changes</li>
+          <li>Problems solved</li>
+        </ul>
+
+        <div class="endpoint">GET /codechef/&lt;username&gt;</div>
+
+        <a href="/codechef" class="btn">View Docs</a>
+      </div>
+
     </div>
+
   </div>
-</body>
-</html>
+</section>
+
+{% include "footer.html" %}

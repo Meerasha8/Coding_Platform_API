@@ -1,40 +1,89 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>LeetCode API Guide</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-<div class="container">
-  <h2>LeetCode API</h2>
+{% include "header.html" %}
 
-  <h3>📌 Endpoint</h3>
-  <p><code>/leetcode/&lt;username&gt;</code></p>
+<section class="api-doc">
+  <div class="container">
 
-  <h3>📌 What it does</h3>
-  <p>Fetches user problem-solving stats and contest details from LeetCode.</p>
+    <!-- TITLE -->
+    <div class="api-header">
+      <h1>LeetCode API</h1>
+      <span class="method">GET</span>
+    </div>
 
-  <h3>📌 Returns</h3>
-  <ul>
-    <li>Total problems solved</li>
-    <li>Easy, Medium, Hard counts</li>
-    <li>Contest rating</li>
-    <li>Global ranking</li>
-  </ul>
+    <!-- ENDPOINT -->
+    <div class="endpoint-box">
+      <code>/leetcode/&lt;username&gt;</code>
+    </div>
 
-  <h3>📌 Try it</h3>
-  <input id="username" placeholder="Enter username">
-  <button onclick="testAPI()">Test API</button>
-  <pre id="result"></pre>
-</div>
+    <!-- DESCRIPTION -->
+    <p class="api-desc">
+      Fetch user problem-solving statistics and contest ranking data from LeetCode.
+    </p>
+
+    <!-- RESPONSE INFO -->
+    <div class="info-grid">
+
+      <div class="info-card">
+        <h3>Returns</h3>
+        <ul>
+          <li>Total problems solved</li>
+          <li>Easy / Medium / Hard breakdown</li>
+          <li>Contest rating</li>
+          <li>Global ranking</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>Usage</h3>
+        <pre>{
+  "total": 500,
+  "easy": 200,
+  "medium": 250,
+  "hard": 50,
+  "rating": 1800,
+  "globalRanking": 12000
+}</pre>
+      </div>
+
+    </div>
+
+    <!-- TEST SECTION -->
+    <div class="try-box">
+
+      <h3>Try it</h3>
+
+      <div class="input-group">
+        <input id="username" placeholder="Enter username">
+        <button onclick="testAPI()">Send Request</button>
+      </div>
+
+      <pre id="result" class="result-box">// Response will appear here</pre>
+
+    </div>
+
+  </div>
+</section>
+
+{% include "footer.html" %}
 
 <script>
 async function testAPI() {
   const user = document.getElementById("username").value;
-  const res = await fetch(`/leetcode/${user}`);
-  const data = await res.json();
-  document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+
+  if (!user) {
+    alert("Enter username");
+    return;
+  }
+
+  const resultBox = document.getElementById("result");
+  resultBox.innerText = "Loading...";
+
+  try {
+    const res = await fetch(`/leetcode/${user}`);
+    const data = await res.json();
+
+    resultBox.innerText = JSON.stringify(data, null, 2);
+  } catch (err) {
+    resultBox.innerText = "Error fetching data";
+  }
 }
 </script>
-</body>
-</html>
