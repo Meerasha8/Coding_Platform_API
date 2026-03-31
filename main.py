@@ -14,14 +14,22 @@ load_dotenv()
 LEETCODE_URL = os.getenv("LEETCODE_URL")
 USER = os.getenv("LEETCODE_ID")
 
-CODEFORCES_ID = os.getenv("CODEFORCES_ID")
-CODEFORCES_URL = os.getenv("CODEFORCES_URL") + CODEFORCES_ID
-CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL") + CODEFORCES_ID
+CODEFORCES_URL = os.getenv("CODEFORCES_URL")
+CODEFORCES_STATUS_URL = os.getenv("CODEFORCES_STATUS_URL")
 
-CODECHEF_ID = os.getenv("CODECHEF_ID")
-CODECHEF_URL = os.getenv("CODECHEF_URL") + CODECHEF_ID
 
-COUNT_QUERY = {
+CODECHEF_URL = os.getenv("CODECHEF_URL")
+
+
+
+
+
+app = Flask(__name__)
+
+
+@app.route("/leetcode/<username>",methods=["GET"])
+def leetcode(username):
+    COUNT_QUERY = {
     "query": """
     query getUserProfile($username: String!) {
         matchedUser(username: $username) {
@@ -39,10 +47,9 @@ COUNT_QUERY = {
         }
     }
     """,
-    "variables": {"username": USER}
+    "variables": {"username": username}
 }
-
-RATING_QUERY = {
+    RATING_QUERY = {
     "query": """
     query userContestRankingInfo($username: String!) {
         userContestRanking(username: $username) {
@@ -54,15 +61,10 @@ RATING_QUERY = {
     }
     """,
     "variables": {
-        "username": USER
+        "username": username
     }
 }
-
-app = Flask(__name__)
-
-
-@app.route("/leetcode/<username>",methods=["GET"])
-def leetcode(username):
+    
     count_res = requests.post(LEETCODE_URL,json=COUNT_QUERY)
     count_data= count_res.json()
     count = count_data["data"]["matchedUser"]["submitStats"]["acSubmissionNum"]
@@ -93,14 +95,14 @@ def leetcode(username):
 
 @app.route("/codeforces/<username>",methods=["GET"])
 def codeforces(username):
-    ranking_res = requests.get(CODEFORCES_URL).json()["result"][0]
+    ranking_res = requests.get(CODEFORCES_URL+username).json()["result"][0]
     
     curr_rating = ranking_res["rating"]
     max_rating = ranking_res["maxRating"]
     curr_rank = ranking_res["rank"]
     max_rank = ranking_res["maxRank"]
     
-    count_res = requests.get(CODEFORCES_STATUS_URL).json()
+    count_res = requests.get(CODEFORCES_STATUS_URL+username).json()
     
     solved = set()
     for sub in count_res["result"]:
@@ -121,7 +123,7 @@ def codeforces(username):
 @app.route("/codechef/<username>",methods=["GET"])
 def codechef(username):
     driver = webdriver.Chrome()
-    driver.get(CODECHEF_URL)
+    driver.get(CODECHEF_URL+username)
     time.sleep(5)
     html = driver.page_source
     soup = BeautifulSoup(html,"html.parser")
