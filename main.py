@@ -86,7 +86,6 @@ def leetcode(username):
     
     count_data = count_res.json()
     rating_data = rating_res.json()["data"]["userContestRanking"]
-    print(rating_data)
 
     if "errors" in count_data:
         return jsonify({"error": "User not found"}), 404
@@ -132,7 +131,6 @@ def codeforces(username):
   
     ranking_res = res["result"][0]
     
-    print(ranking_res)
 
     
     curr_rating = ranking_res["rating"] if "rating" in ranking_res else "None"
@@ -176,7 +174,6 @@ def codechef(username):
             return jsonify({"error": "User not found"}), 404
 
         text = soup.get_text(" ", strip=True)
-        print(text)
         
         rating_block = re.search(
     r'(\d{3,4})\??\s*\(\s*([+-]?\d+)\s*\)\s*Rating',
