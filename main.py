@@ -82,9 +82,13 @@ def leetcode(username):
 }
     
     count_res = requests.post(LEETCODE_URL, json=COUNT_QUERY)
+    rating_res = requests.post(LEETCODE_URL,json=RATING_QUERY)
+    
     count_data = count_res.json()
+    rating_data = rating_res.json()["data"]["userContestRanking"]
+    print(rating_data)
 
-    if not count_data["data"]["matchedUser"]:
+    if "errors" in count_data:
         return jsonify({"error": "User not found"}), 404
     
     
@@ -93,13 +97,17 @@ def leetcode(username):
     easy = count[1]["count"]
     medium = count[2]["count"]
     hard = count[3]["count"]
-    
-    rating_res = requests.post(LEETCODE_URL,json=RATING_QUERY)
-    rating_data = rating_res.json()["data"]["userContestRanking"]
-    attended_contest = rating_data["attendedContestsCount"]
-    globalRanking = rating_data["globalRanking"]
-    rating = ceil(rating_data["rating"])
-    topPercentage = rating_data["topPercentage"]
+    if rating_data:
+        attended_contest = rating_data["attendedContestsCount"]
+        globalRanking = rating_data["globalRanking"]
+        rating = ceil(rating_data["rating"])
+        topPercentage = rating_data["topPercentage"]
+    else:
+        attended_contest = 0
+        globalRanking = "Not Rated"
+        rating = "Not Rated"
+        topPercentage = "Not Rated"
+        
     
     data = {
         "total":total,
@@ -120,13 +128,17 @@ def codeforces(username):
 
     if res["status"] != "OK":
         return jsonify({"error": "User not found"}), 404
-
+    
+  
     ranking_res = res["result"][0]
     
-    curr_rating = ranking_res["rating"]
-    max_rating = ranking_res["maxRating"]
-    curr_rank = ranking_res["rank"]
-    max_rank = ranking_res["maxRank"]
+    print(ranking_res)
+
+    
+    curr_rating = ranking_res["rating"] if "rating" in ranking_res else "None"
+    max_rating = ranking_res["maxRating"] if "maxRating" in ranking_res else "None"
+    curr_rank = ranking_res["rank"] if "rank" in ranking_res else "None"
+    max_rank = ranking_res["maxRank"] if "maxRank" in ranking_res else "None"
     
     count_res = requests.get(CODEFORCES_STATUS_URL+username).json()
     
@@ -157,26 +169,22 @@ def codechef(username):
             timeout=10
         )
 
-        if res.status_code != 200:
-            return jsonify({"error": "User not found"}), 404
-
         soup = BeautifulSoup(res.text, "html.parser")
-        text = soup.get_text(" ", strip=True)
+        profile_container = soup.find("div", class_="user-profile-container")
 
-        if "User not found" in text or "Page Not Found" in text:
+        if not profile_container:
             return jsonify({"error": "User not found"}), 404
 
+        text = soup.get_text(" ", strip=True)
+        print(text)
+        
         rating_block = re.search(
-            r'(\d{3,4})\s*\(\s*\+?(-?\d+)\s*\)\s*Rating',
-            text
-        )
+    r'(\d{3,4})\??\s*\(\s*([+-]?\d+)\s*\)\s*Rating',
+    text
+)
 
-        if rating_block:
-            rating = rating_block.group(1)
-            change = rating_block.group(2)
-        else:
-            rating = "Not found"
-            change = "Not found"
+        rating = rating_block.group(1) if rating_block else "Not found"
+        change = rating_block.group(2) if rating_block else "Not found"
 
         problems_match = re.search(
             r'Total Problems Solved:\s*(\d+)',
