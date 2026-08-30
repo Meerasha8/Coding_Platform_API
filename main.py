@@ -1,10 +1,13 @@
-from flask import Flask,jsonify,render_template
+from flask import Flask, jsonify, render_template, request
 import os
 from dotenv import load_dotenv
 import requests
 from math import ceil
 from bs4 import BeautifulSoup
 import re
+import time
+from collections import defaultdict, deque
+from functools import wraps
 
 load_dotenv()
 
@@ -26,11 +29,46 @@ LINKEDIN = os.getenv("LINKEDIN")
 
 app = Flask(__name__)
 
+REQUEST_LOG = defaultdict(deque)
+LEETCODE_RATE_LIMIT = 10
+LEETCODE_RATE_WINDOW_SECONDS = 60
+
+
+def get_client_ip():
+    forwarded_for = request.headers.get("X-Forwarded-For")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def limit_leetcode_requests(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        client_ip = get_client_ip()
+        now = time.time()
+        request_times = REQUEST_LOG[client_ip]
+
+        while request_times and now - request_times[0] >= LEETCODE_RATE_WINDOW_SECONDS:
+            request_times.popleft()
+
+        if len(request_times) >= LEETCODE_RATE_LIMIT:
+            return jsonify({
+                "error": "Rate limit exceeded",
+                "message": "You can make at most 10 LeetCode requests per minute."
+            }), 429
+
+        request_times.append(now)
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 @app.route("/")
 def home_page():
     return render_template("index.html",github=GITHUB,linkedin=LINKEDIN)
 
 @app.route("/leetcode")
+@limit_leetcode_requests
 def leetcode_guide():
     return render_template("leetcode.html",active="leetcode",github=GITHUB,linkedin=LINKEDIN)
 
@@ -44,6 +82,7 @@ def codechef_guide():
 
 
 @app.route("/leetcode/<username>",methods=["GET"])
+@limit_leetcode_requests
 def leetcode(username):
     COUNT_QUERY = {
     "query": """
